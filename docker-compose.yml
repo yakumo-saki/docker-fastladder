@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+   db:
+     image: mysql:8
+     command: --default-authentication-plugin=mysql_native_password
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: fastladder
+       MYSQL_DATABASE: fastladder
+       MYSQL_USER: fastladder
+       MYSQL_PASSWORD: fastladder1234
+   web:
+     build: .
+     ports:
+       - "3001:3001"
+     restart: always
+volumes:
+  db_data:
+    driver_opts:
+      type: none
+      device: /opt/docker/fastladder_db
+      o: bind
