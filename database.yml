@@ -28,10 +28,10 @@ test:
 production:
   adapter: mysql2
   encoding: utf8
-  database: fastladder
-  username: fastladder
-  password: fastladder1234
-  host: db
+  database: <%= ENV["DB_NAME"] %>
+  username: <%= ENV["DB_USER"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
+  host: <%= ENV["DB_HOST"] %>
 
 #production:
   #  adapter: sqlite3
