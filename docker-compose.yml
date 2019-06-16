@@ -15,8 +15,18 @@ services:
    web:
      build: .
      env_file: env.production
+     command: bash -c "bundle exec unicorn -p 3001 -c ./config/unicorn.rb"
      ports:
        - "3001:3001"
+     depends_on:
+       - db
+     restart: always
+   crawler:
+     build: .
+     env_file: env.production
+     command: bash -c "bundle exec ruby script/crawler"
+     depends_on:
+       - db
      restart: always
 volumes:
   db_data:
