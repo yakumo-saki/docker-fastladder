@@ -28,3 +28,13 @@ docker-compose up -d
 # irb> SecureRandom.hex(64)
 # irb=> "secure random string"
 ```
+
+## modify gemfile
+
+maybe you need below change to `Gemfile`
+
+```bash
+cat $BUILD_DIR/Gemfile \
+  | sed s/"gem 'mysql2'"/"gem 'mysql2', '< 0.5.0'"/ \
+  | sed s/"gem 'pg'"/"gem 'pg', '~> 0.15'"/ > $BUILD_DIR/Gemfile.new
+```
