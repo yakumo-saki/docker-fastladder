@@ -8,8 +8,6 @@ mb-init
 RUN echo "$INIT_SUM  dumb-init" | sha256sum -c -
 RUN chmod +x /dumb-init
 
-# nodejs
-RUN apt update && apt install -y nodejs
 COPY ./build /fastladder
 COPY ./database.yml /fastladder/config/database.yml
 COPY ./secrets.yml /fastladder/config/secrets.yml
@@ -19,8 +17,10 @@ ENV RAILS_ENV=production
 
 WORKDIR /fastladder
 
-RUN bundle -j9
-RUN ./bin/rake assets:precompile
+# build
+RUN apt update && apt install -y nodejs
+RUN bundle -j9 && \
+    bundle exec rake assets:precompile
 
 EXPOSE 3001
 ENTRYPOINT ["/dumb-init", "--"]
