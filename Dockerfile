@@ -1,4 +1,4 @@
-FROM ruby:2.7-bullseye
+FROM ruby:2.6-bullseye
 
 COPY ./build /fastladder
 COPY ./database.yml /fastladder/config/database.yml
