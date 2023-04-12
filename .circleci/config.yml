@@ -34,10 +34,10 @@ jobs:
           name: "Build"
           command: |
             ARCH=`uname -m`
-            ls -l
+            ls -lha
             cd build
-            ls -l
-            docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG .
+            ls -lha
+            docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG -f Dockefile ./build
             docker tag $DOCKERHUB_IMAGENAME:$DOCKER_TAG $DOCKERHUB_IMAGENAME:latest
       - run:
           name: "Push"
