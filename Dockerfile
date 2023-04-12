@@ -10,10 +10,10 @@ ENV RAILS_ENV=production
 WORKDIR /fastladder
 
 # build
+# hadolint ignore=DL3008
 RUN apt-get update --no-install-recommends \
-    apt-get install -y tini nodejs \
-    apt-get && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y tini nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN bundle -j9 && \
     bundle exec rake assets:precompile
 
