@@ -35,8 +35,6 @@ jobs:
           command: |
             ARCH=`uname -m`
             ls -lha
-            cd build
-            ls -lha
             docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG -f Dockefile ./build
             docker tag $DOCKERHUB_IMAGENAME:$DOCKER_TAG $DOCKERHUB_IMAGENAME:latest
       - run:
