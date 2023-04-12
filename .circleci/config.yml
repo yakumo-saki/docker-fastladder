@@ -34,7 +34,8 @@ jobs:
           name: "Build"
           command: |
             ARCH=`uname -m`
-            docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG -f $ARCH/Dockerfile .
+            cd build
+            docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG -f Dockerfile .
             docker tag $DOCKERHUB_IMAGENAME:$DOCKER_TAG $DOCKERHUB_IMAGENAME:latest
       - run:
           name: "Push"
