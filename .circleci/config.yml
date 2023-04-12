@@ -27,10 +27,9 @@ jobs:
       - run: ls -l
       - run:
           name: "Run build.sh"
-          command: bash ./build.sh
-      - run:
-          name: "Run prepare.sh"
-          command: bash ./prepare.sh $DOCKERHUB_IMAGENAME $DOCKER_TAG
+          command: |
+            git clone --depth=1 https://github.com/fastladder/fastladder.git build
+            bash ./prepare.sh
       - run:
           name: "Build"
           command: |
