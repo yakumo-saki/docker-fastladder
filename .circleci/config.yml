@@ -36,6 +36,7 @@ jobs:
             ARCH=`uname -m`
             ls -l
             cd build
+            ls -l
             docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG .
             docker tag $DOCKERHUB_IMAGENAME:$DOCKER_TAG $DOCKERHUB_IMAGENAME:latest
       - run:
