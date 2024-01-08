@@ -36,7 +36,9 @@ RUN bundle install -j20 && \
 
 # Copy application code
 COPY ./build/. .
-COPY ./build/database.yml ./config/
+
+# yakumo: add database.yml
+COPY ./database.yml ./config/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
