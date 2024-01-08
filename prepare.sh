@@ -13,11 +13,11 @@ if [ ! -d "${BUILD_DIR}" ]; then
 fi
 
 # config
-cat $BUILD_DIR/Gemfile \
-  | sed s/"gem 'rails'"/"gem 'rails', '~> 4.2', '>= 4.2.11.3'"/ \
-  | sed s/"gem 'mysql2'"/"gem 'mysql2', '> 0.5.0'"/ \
-  | sed s/"gem 'pg'"/"gem 'pg', '~> 0.15'"/ > $BUILD_DIR/Gemfile.new
+# cat $BUILD_DIR/Gemfile \
+#   | sed s/"gem 'rails'"/"gem 'rails', '~> 4.2', '>= 4.2.11.3'"/ \
+#   | sed s/"gem 'mysql2'"/"gem 'mysql2', '> 0.5.0'"/ \
+#   | sed s/"gem 'pg'"/"gem 'pg', '~> 0.15'"/ > $BUILD_DIR/Gemfile.new
 
-mv $BUILD_DIR/Gemfile.new $BUILD_DIR/Gemfile
+# mv $BUILD_DIR/Gemfile.new $BUILD_DIR/Gemfile
 
 echo "### PREPARE SUCCESS ###"
