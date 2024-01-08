@@ -22,12 +22,12 @@ RUN apt-get update -qq && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install application gems
-COPY Gemfile Gemfile.lock ./
+COPY ./build/Gemfile ./build/Gemfile.lock ./
 RUN bundle install -j20 && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git 
 
 # Copy application code
-COPY . .
+COPY ./build/. .
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile

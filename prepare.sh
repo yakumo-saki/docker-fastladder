@@ -20,4 +20,7 @@ fi
 
 # mv $BUILD_DIR/Gemfile.new $BUILD_DIR/Gemfile
 
+echo "Listing directory"
+ls -lh
+
 echo "### PREPARE SUCCESS ###"
