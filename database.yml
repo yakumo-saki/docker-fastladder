@@ -13,8 +13,9 @@ test:
   timeout: 5000
 
 production:
-  adapter: mysql2
-  encoding: utf8
+  #adapter: mysql2
+  adapter: <%= ENV["DB_ADAPTER"] %>
+  encoding: <%= ENV["DB_ENCODING"] %>
   database: <%= ENV["DB_NAME"] %>
   username: <%= ENV["DB_USER"] %>
   password: <%= ENV["DB_PASSWORD"] %>
