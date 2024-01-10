@@ -1,6 +1,8 @@
 # fastladder-docker-compose
+
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/yakumo-saki/docker-fastladder/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/yakumo-saki/docker-fastladder/tree/master)
+
 fastladder container with docker-compose.
-Using MySQL.
 
 ## how to run.
 
