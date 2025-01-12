@@ -7,20 +7,30 @@ BUILD_DIR="$BASE_DIR/build"
 DOCKERHUB_IMAGE="yakumosaki/fastladder"
 VERSION=`LANG=C date '+%Y%m%d%H'`
 
+ORIGIN_URL="https://github.com/fastladder/fastladder.git"
+
+# start build
 if [ ! -d "${BUILD_DIR}" ]; then
-  echo "no build directory. 'git clone repositoryurl build' first." 
-  exit 1
+  git clone --depth=1 ${ORIGIN_URL} build
+  echo "build directory not found. Doing shallow clone"
+else
+  echo "build directory found. Doing reset and pull"
+  cd $BUILD_DIR
+  git reset --hard
+  git pull
 fi
-
-# config
-# cat $BUILD_DIR/Gemfile \
-#   | sed s/"gem 'rails'"/"gem 'rails', '~> 4.2', '>= 4.2.11.3'"/ \
-#   | sed s/"gem 'mysql2'"/"gem 'mysql2', '> 0.5.0'"/ \
-#   | sed s/"gem 'pg'"/"gem 'pg', '~> 0.15'"/ > $BUILD_DIR/Gemfile.new
-
-# mv $BUILD_DIR/Gemfile.new $BUILD_DIR/Gemfile
 
 echo "Listing directory"
 ls -lh
+
+# replace yaml
+cd $BASE_DIR
+cp database.yml build/config/database.yml
+cp secrets.yml build/config/secrets.yml
+
+cd $BUILD_DIR
+docker build -t $DOCKERHUB_IMAGE:$VERSION .
+docker tag $DOCKERHUB_IMAGE:$VERSION $DOCKERHUB_IMAGE:latest
+
 
 echo "### PREPARE SUCCESS ###"
