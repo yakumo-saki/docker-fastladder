@@ -33,15 +33,8 @@ jobs:
       - run:
           name: "Run build.sh"
           command: |
-            git clone --depth=1 https://github.com/fastladder/fastladder.git build
-            bash ./prepare.sh
-      - run:
-          name: "Build"
-          command: |
             ARCH=`uname -m`
-            ls -lha
-            docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG -f ./Dockerfile .
-            docker tag $DOCKERHUB_IMAGENAME:$DOCKER_TAG $DOCKERHUB_IMAGENAME:latest
+            bash ./prepare.sh $DOCKER_TAG
       - run:
           name: "Push"
           command: |
