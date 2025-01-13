@@ -34,7 +34,7 @@ jobs:
           name: "Run build.sh"
           command: |
             ARCH=`uname -m`
-            bash ./prepare.sh $DOCKER_TAG
+            bash ./build.sh $DOCKERHUB_IMAGENAME $DOCKER_TAG
       - run:
           name: "Push"
           command: |

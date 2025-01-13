@@ -1,19 +1,30 @@
 #!/bin/bash -eu
 
+#                 dockerhub_image               tag
+# usage: build.sh yakumosaki/fastladder-aarch64 20250130
+#
+# This will build docker image 
+# and tagging with $2 and latest
+
 set +u
 
 BASE_DIR=`pwd`
 BUILD_DIR="$BASE_DIR/build"
 
 #
-DOCKERHUB_IMAGE="yakumosaki/fastladder"
+DOCKERHUB_IMAGE="$1"
 #VERSION=`LANG=C date '+%Y%m%d%H'`
-VERSION=$1
+VERSION=$2
 
 ORIGIN_URL="https://github.com/fastladder/fastladder.git"
 
 # start build
 set -u
+
+if [[ -z $DOCKERHUB_IMAGE ]]; then
+    echo 'Dockerhubイメージ名が指定されていません。'
+    exit 1
+fi
 
 if [[ -z $VERSION ]]; then
     echo 'タグ名が指定されていません。'
@@ -39,7 +50,7 @@ cp database.yml build/config/database.yml
 cp secrets.yml build/config/secrets.yml
 
 cd $BUILD_DIR
-docker build -t $DOCKERHUB_IMAGE:$VERSION .
+docker build  --progress=plain -t $DOCKERHUB_IMAGE:$VERSION .
 docker tag $DOCKERHUB_IMAGE:$VERSION $DOCKERHUB_IMAGE:latest
 
 
