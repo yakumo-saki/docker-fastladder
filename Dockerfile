@@ -4,7 +4,7 @@
 #ARG RUBY_VERSION=3.2.2
 #FROM registry.docker.com/library/ruby:$RUBY_VERSION-slim-bookworm as base
 
-FROM ghcr.io/moritzheiber/ruby-jemalloc:3.3.6-slim as base
+FROM ghcr.io/moritzheiber/ruby-jemalloc:3.3.6-slim AS base
 
 #RUN gem install foreman
 
@@ -41,6 +41,7 @@ RUN bundle install -j20 && \
 COPY ./build/. .
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN bundle lock --add-platform aarch64-linux
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 # Run and own only the runtime files as a non-root user for security
@@ -53,8 +54,8 @@ ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 5000
-ENV PORT 5000
-ENV RAILS_LOG_TO_STDOUT true
+ENV PORT=5000
+ENV RAILS_LOG_TO_STDOUT=true
 
 CMD ["./bin/rails", "server"]
 
