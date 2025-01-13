@@ -7,6 +7,10 @@ parameters:
     default: true
     type: boolean
 
+machine:
+  timezone:
+    Asia/Tokyo
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -26,8 +30,10 @@ jobs:
       - run:
           name: "Determine tag name"
           command: |
+            echo 'export TZ="yakumosaki/fastladder-aarch64"' >> "$BASH_ENV"
             echo "export DOCKER_TAG=`date '+%Y%m%d_%H'`" >> "$BASH_ENV"
             echo 'export DOCKERHUB_IMAGENAME="yakumosaki/fastladder-aarch64"' >> "$BASH_ENV"
+            
       - checkout
       - run: ls -l
       - run:

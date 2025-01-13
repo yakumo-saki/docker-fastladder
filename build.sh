@@ -44,14 +44,15 @@ fi
 echo "Listing directory"
 ls -lh
 
+
 # replace yaml
 cd $BASE_DIR
 cp database.yml build/config/database.yml
 cp secrets.yml build/config/secrets.yml
 
-cd $BUILD_DIR
+# build from base Dockerfile
+cd $BASE_DIR
 docker build  --progress=plain -t $DOCKERHUB_IMAGE:$VERSION .
 docker tag $DOCKERHUB_IMAGE:$VERSION $DOCKERHUB_IMAGE:latest
-
 
 echo "### PREPARE SUCCESS ###"
