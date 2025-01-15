@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fastladder-env
+  labels:
+    app: fastladder
+data:
+  MYSQL_CHARSET_CONF: |
+    [mysqld]
+    character-set-server=utf8mb4
+
+    [client]
+    default-character-set=utf8mb4
+  DB_ADAPTER: postgresql
+  DB_ENCODING: unicode
+  DB_HOST: your-mysql-db-host
+  DB_NAME: your-mysql-db-name
+  DB_ROOT_PASSWORD: your-mysql-db-password
+  DB_PASSWORD: your-mysql-db-password
+  DB_USER: your-mysql-db-user
+  SECRET_KEY_BASE: generate with # irb> require 'securerandom' irb> SecureRandom.hex(64)
