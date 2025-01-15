@@ -16,9 +16,9 @@ services:
    web:
      build: .
      env_file: env.production
-     command: bash -c "bundle exec unicorn -p 3001 -c ./config/unicorn.rb"
+     command: bash -c "bundle exec puma"
      ports:
-       - "3001:3001"
+       - "5000:5000"
      depends_on:
        - db
      restart: always
