@@ -19,7 +19,6 @@ spec:
     spec:
       containers:
         - name: fastladder-web
-          #image: yakumosaki/fastladder-aarch64:20230412_23
           image: yakumosaki/fastladder-aarch64:latest
           resources:
             requests:
