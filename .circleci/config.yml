@@ -7,6 +7,10 @@ parameters:
     default: true
     type: boolean
 
+machine:
+  timezone:
+    Asia/Tokyo
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -14,7 +18,7 @@ jobs:
     # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
     # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     machine:
-      image: ubuntu-2004:202101-01
+      image: ubuntu-2404:current
       docker_layer_caching: true
     resource_class: arm.medium
 
@@ -26,22 +30,17 @@ jobs:
       - run:
           name: "Determine tag name"
           command: |
+            echo 'export TZ="yakumosaki/fastladder-aarch64"' >> "$BASH_ENV"
             echo "export DOCKER_TAG=`date '+%Y%m%d_%H'`" >> "$BASH_ENV"
             echo 'export DOCKERHUB_IMAGENAME="yakumosaki/fastladder-aarch64"' >> "$BASH_ENV"
+            
       - checkout
       - run: ls -l
       - run:
           name: "Run build.sh"
           command: |
-            git clone --depth=1 https://github.com/fastladder/fastladder.git build
-            bash ./prepare.sh
-      - run:
-          name: "Build"
-          command: |
             ARCH=`uname -m`
-            ls -lha
-            docker buildx build -t $DOCKERHUB_IMAGENAME:$DOCKER_TAG -f ./Dockerfile .
-            docker tag $DOCKERHUB_IMAGENAME:$DOCKER_TAG $DOCKERHUB_IMAGENAME:latest
+            bash ./build.sh $DOCKERHUB_IMAGENAME $DOCKER_TAG
       - run:
           name: "Push"
           command: |
