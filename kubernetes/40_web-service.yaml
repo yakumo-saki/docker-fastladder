@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: fastladder
+    tier: web
+  name: fastladder-web
+spec:
+  selector:
+    app: fastladder
+    tier: web
+  type: LoadBalancer
+  ports:
+  - name: "web"
+    protocol: TCP
+    port: 5000
+    targetPort: 5000

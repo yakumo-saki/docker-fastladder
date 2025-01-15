@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: fastladder
+    tier: web
+  name: fastladder-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastladder
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: fastladder
+        tier: web
+    spec:
+      containers:
+        - name: fastladder-web
+          #image: yakumosaki/fastladder-aarch64:20230412_23
+          image: yakumosaki/fastladder-aarch64:latest
+          resources:
+            requests:
+              memory: "401M"
+          # args:
+          #   - tail
+          #   - -f
+          #   - /dev/null
+          envFrom:
+            - configMapRef:
+                name: fastladder-env
+          ports:
+            - containerPort: 5000
