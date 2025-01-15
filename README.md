@@ -1,4 +1,4 @@
-# fastladder-docker-compose
+# docker-fastladder
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/yakumo-saki/docker-fastladder/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/yakumo-saki/docker-fastladder/tree/master)
 
@@ -20,6 +20,8 @@ cp env.production.sample env.production
 docker-compose up -d
 ```
 
+Web server starts up in port 5000.
+
 ## editing env.production
 ### obtain secret_key_base
 
@@ -29,14 +31,4 @@ docker-compose up -d
 # irb> require 'securerandom'
 # irb> SecureRandom.hex(64)
 # irb=> "secure random string"
-```
-
-## modify gemfile
-
-maybe you need below change to `Gemfile`
-
-```bash
-cat $BUILD_DIR/Gemfile \
-  | sed s/"gem 'mysql2'"/"gem 'mysql2', '< 0.5.0'"/ \
-  | sed s/"gem 'pg'"/"gem 'pg', '~> 0.15'"/ > $BUILD_DIR/Gemfile.new
 ```
