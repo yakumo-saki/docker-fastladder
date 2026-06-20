@@ -1,10 +1,6 @@
-version: '3'
-
-#
 services:
    db:
      image: mysql:8
-     command: --default-authentication-plugin=mysql_native_password
      volumes:
        - ./data:/var/lib/mysql
      restart: always
@@ -14,16 +10,15 @@ services:
        MYSQL_USER: fastladder
        MYSQL_PASSWORD: fastladder1234
    web:
-     build: .
+     image: yakumosaki/fastladder:latest
      env_file: env.production
-     command: bash -c "bundle exec puma"
      ports:
        - "5000:5000"
      depends_on:
        - db
      restart: always
    crawler:
-     build: .
+     image: yakumosaki/fastladder:latest
      env_file: env.production
      command: bash -c "bundle exec ruby script/crawler"
      depends_on:
