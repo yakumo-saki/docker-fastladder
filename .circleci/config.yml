@@ -91,7 +91,7 @@ jobs:
       - run:
           name: "push latest manifest"
           command: |
-            export IMG="yakumosaki/glitch-soc"
+            export IMG="${DOCKERHUB_IMAGENAME}"
 
             echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin docker.io
             echo "Docker login ok"
