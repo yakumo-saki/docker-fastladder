@@ -2,56 +2,117 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
-parameters:
-  run_workflow_build:
-    default: true
-    type: boolean
-
-machine:
-  timezone:
-    Asia/Tokyo
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
-jobs:
-  build-image:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+executors:
+  arm64:
     machine:
       image: ubuntu-2404:current
-      docker_layer_caching: true
-    resource_class: arm.medium
+      docker_layer_caching: false
+    resource_class: arm.large
+  amd64:
+    machine:
+      image: ubuntu-2404:current
+      docker_layer_caching: false
+    resource_class: large
 
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+commands:
+  # Define reusable commands here.
+  # See: https://circleci.com/docs/reference/reusing-config/
+  build-and-push-image:
     steps:
       - run:
-          name: "Test dockerhub login"
-          command: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
-      - run:
-          name: "Determine tag name"
+          name: "determin tag names"
           command: |
-            echo 'export TZ="yakumosaki/fastladder-aarch64"' >> "$BASH_ENV"
-            echo "export DOCKER_TAG=`date '+%Y%m%d_%H'`" >> "$BASH_ENV"
-            echo 'export DOCKERHUB_IMAGENAME="yakumosaki/fastladder-aarch64"' >> "$BASH_ENV"
-            
-      - checkout
-      - run: ls -l
+            echo 'export DOCKER_TAG="`date '+%Y%m%d'`${DOCKER_TAG_SUFFIX}"' >> "$BASH_ENV"
+
+            echo 'export DOCKER_TAG_LATEST="latest${DOCKER_TAG_SUFFIX}"' >> "$BASH_ENV"
+            echo 'export DOCKERHUB_IMAGENAME="yakumosaki/fastladder"' >> "$BASH_ENV"
       - run:
-          name: "Run build.sh"
+          name: "Run prepare.sh"
+          command: |
+            bash ./prepare.sh
+      - run:
+          name: "Build"
           command: |
             ARCH=`uname -m`
-            bash ./build.sh $DOCKERHUB_IMAGENAME $DOCKER_TAG
+            docker buildx build --platform ${DOCKER_PLATFORM} \
+                                --provenance=false --sbom=false \
+                                --build-arg CUSTOM_IMG=${CUSTOM_IMG} \
+                                -t $DOCKERHUB_IMAGENAME:${DOCKER_TAG} .
+            docker tag ${DOCKERHUB_IMAGENAME}:${DOCKER_TAG} ${DOCKERHUB_IMAGENAME}:${DOCKER_TAG_LATEST}
       - run:
           name: "Push"
           command: |
             docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
             docker push $DOCKERHUB_IMAGENAME:$DOCKER_TAG
-            docker push $DOCKERHUB_IMAGENAME:latest
+            docker push $DOCKERHUB_IMAGENAME:${DOCKER_TAG_LATEST}
+
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs:
+  build-image-arm64:
+    executor: arm64
+    environment:
+      TZ: "Asia/Tokyo"
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    steps:
+      - run:
+          name: "Config"
+          command: |
+            # configs
+            echo 'export DOCKER_TAG_SUFFIX="_arm64"' >> "$BASH_ENV"
+            echo 'export DOCKER_PLATFORM="linux/arm64"' >> "$BASH_ENV"
+      - checkout
+      - build-and-push-image
+  build-image-amd64:
+    executor: amd64
+    environment:
+      TZ: "Asia/Tokyo"
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    steps:
+      - run:
+          name: "Config"
+          command: |
+            # configs
+            echo 'export DOCKER_TAG_SUFFIX="_amd64"' >> "$BASH_ENV"
+            echo 'export DOCKER_PLATFORM="linux/amd64"' >> "$BASH_ENV"
+      - checkout
+      - build-and-push-image
+
+  push-latest-tag:
+    machine:
+      image: ubuntu-2204:current
+      docker_layer_caching: true
+    resource_class: medium
+
+    environment:
+      TZ: "Asia/Tokyo"
+
+    steps:
+      - run:
+          name: "push latest manifest"
+          command: |
+            export IMG="yakumosaki/glitch-soc"
+
+            echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin docker.io
+            echo "Docker login ok"
+
+            docker manifest create ${IMG}:latest \
+                                   ${IMG}:latest_arm64 \
+                                   ${IMG}:latest_amd64
+            docker manifest push ${IMG}:latest
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  build-fastladder-aarch64:
+  build-and-push-fastladder:
     jobs:
-      - build-image:
+      - build-image-arm64:
           context: DOCKER_USER
+      - build-image-amd64:
+          context: DOCKER_USER
+      - push-latest-tag:
+          requires:
+            - build-image-arm64
+            - build-image-amd64
+          context: DOCKER_USER
+
