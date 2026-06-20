@@ -63,5 +63,5 @@ EXPOSE 5000
 ENV PORT=5000
 ENV RAILS_LOG_TO_STDOUT=true
 
-CMD ["./bin/rails", "server"]
+CMD ["/docker-entrypoint.sh","./bin/rails", "server"]
 
