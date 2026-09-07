@@ -39,7 +39,7 @@ EOF
 COPY ./build/ .
 
 COPY docker-entrypoint.sh /
-RUN chmod +x /rails/bin/docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 #
